@@ -4,5 +4,5 @@ namespace App\Contracts;
 
 interface TwitchContract
 {
-    public function getTopStreams();
+    public function getStreams();
 }

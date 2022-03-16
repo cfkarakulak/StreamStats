@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Contracts\TwitchContract;
 use Log;
+use Str;
 
 class TwitchSeedStreams extends Command
 {
@@ -40,10 +41,32 @@ class TwitchSeedStreams extends Command
      */
     public function handle()
     {
-        $streams = $this->twitchRepository->getTopStreams(
-            count: 1000,
+        $streams = $this->twitchRepository->getStreams();
+
+        if ($streams->count() <= 0) {
+            return self::abort('Twitch API returned with an empty streams response.');
+        }
+
+        // sortu kendimiz belirlememiz gerekiyor.
+        $data = $streams->map(function ($item) {
+            return collect($item)
+                ->put('id', Str::uuid()->toString())
+                ->only('id', 'title', 'game_id', 'game_name', 'viewer_count', 'started_at')
+                ->values()
+                ->all();
+        });
+
+        $execute = $this->twitchRepository->storeStreams(
+            streams: $data->collapse()->toArray(),
+            count: $data->count(),
         );
 
         return 0;
+    }
+
+    public static function abort($content)
+    {
+        Log::info($content);
+        return 1;
     }
 }
