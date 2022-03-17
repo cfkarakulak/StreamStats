@@ -57,4 +57,60 @@ class TwitchRepository implements TwitchContract
             $streams,
         );
     }
+
+    public function getGameStreamsGrouped()
+    {
+        return DB::select(
+            <<<SQL
+                SELECT
+                    game_name,
+                    COUNT(*) as number_of_streams
+                FROM ss_twitch_streams
+                GROUP BY game_id
+            SQL
+        );
+    }
+
+    public function getGameStreamsByViewers()
+    {
+        return DB::select(
+            <<<SQL
+                SELECT
+                    game_name,
+                    SUM(number_of_viewers) as number_of_viewers
+                FROM ss_twitch_streams
+                GROUP BY game_id
+                ORDER BY number_of_viewers DESC
+            SQL
+        );
+    }
+
+    public function getTopStreamsByViewers()
+    {
+        return DB::select(
+            <<<SQL
+                SELECT
+                    stream_title,
+                    number_of_viewers
+                FROM ss_twitch_streams
+                ORDER BY number_of_viewers DESC
+                LIMIT 100
+            SQL
+        );
+    }
+
+    public function getStreamsByNearestHour()
+    {
+        return DB::select(
+            <<<SQL
+                SELECT
+                    COUNT(id) as count,
+                    stream_title, started_at,
+                    DATE_FORMAT(DATE_ADD(started_at, INTERVAL 30 MINUTE), '%Y-%m-%d %H:00:00') as nearest_hour
+                FROM ss_twitch_streams
+                GROUP BY nearest_hour
+                ORDER BY count DESC
+            SQL
+        );
+    }
 }
