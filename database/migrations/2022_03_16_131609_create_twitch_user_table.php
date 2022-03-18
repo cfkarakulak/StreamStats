@@ -12,13 +12,13 @@ return new class() extends Migration {
      */
     public function up()
     {
-        Schema::create('twitch_streams', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->integer('game_id');
-            $table->string('game_name');
-            $table->text('stream_title');
-            $table->integer('number_of_viewers');
-            $table->string('started_at');
+        Schema::create('twitch_user', function (Blueprint $table) {
+            $table->id();
+            $table->string('access_token');
+            $table->string('refresh_token');
+            $table->integer('expires_in');
+            $table->string('email');
+            $table->string('login');
         });
     }
 
@@ -29,6 +29,6 @@ return new class() extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('twitch_streams');
+        Schema::dropIfExists('twitch_user');
     }
 };

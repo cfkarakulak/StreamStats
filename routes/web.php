@@ -19,5 +19,6 @@ Route::get('/', function () {
 });
 
 Route::controller(TwitchStatsController::class)->group(function () {
-    Route::get('/render', 'render');
+    Route::get('/show', 'show');
+    Route::get('/auth', 'auth');
 });

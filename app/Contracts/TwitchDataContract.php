@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface TwitchContract
+interface TwitchDataContract
 {
     public function getStreams();
 }

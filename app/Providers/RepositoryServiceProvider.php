@@ -14,8 +14,13 @@ class RepositoryServiceProvider extends ServiceProvider implements DeferrablePro
     public function register()
     {
         $this->app->bind(
-            \App\Contracts\TwitchContract::class,
-            \App\Repositories\TwitchRepository::class
+            \App\Contracts\TwitchUserContract::class,
+            \App\Repositories\TwitchUserRepository::class
+        );
+
+        $this->app->bind(
+            \App\Contracts\TwitchDataContract::class,
+            \App\Repositories\TwitchDataRepository::class
         );
     }
 
@@ -26,7 +31,8 @@ class RepositoryServiceProvider extends ServiceProvider implements DeferrablePro
     public function provides()
     {
         return [
-            \App\Contracts\TwitchContract::class,
+            \App\Contracts\TwitchUserContract::class,
+            \App\Contracts\TwitchDataContract::class,
         ];
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Contracts\TwitchContract;
+use App\Contracts\TwitchDataContract;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Exception;
 use Http;
 use Log;
 
-class TwitchRepository implements TwitchContract
+class TwitchDataRepository implements TwitchDataContract
 {
     public function getStreams(): Collection
     {
@@ -41,7 +42,7 @@ class TwitchRepository implements TwitchContract
         return DB::update(
             sprintf(
                 <<<SQL
-                    INSERT INTO ss_twitch_streams
+                    INSERT INTO ss_twitch_stream
                         (
                             id,
                             game_id,
@@ -65,7 +66,7 @@ class TwitchRepository implements TwitchContract
                 SELECT
                     game_name,
                     COUNT(*) as number_of_streams
-                FROM ss_twitch_streams
+                FROM ss_twitch_stream
                 GROUP BY game_id
             SQL
         );
@@ -78,7 +79,7 @@ class TwitchRepository implements TwitchContract
                 SELECT
                     game_name,
                     SUM(number_of_viewers) as number_of_viewers
-                FROM ss_twitch_streams
+                FROM ss_twitch_stream
                 GROUP BY game_id
                 ORDER BY number_of_viewers DESC
             SQL
@@ -92,7 +93,7 @@ class TwitchRepository implements TwitchContract
                 SELECT
                     stream_title,
                     number_of_viewers
-                FROM ss_twitch_streams
+                FROM ss_twitch_stream
                 ORDER BY number_of_viewers DESC
                 LIMIT 100
             SQL
@@ -107,7 +108,7 @@ class TwitchRepository implements TwitchContract
                     COUNT(id) as count,
                     stream_title, started_at,
                     DATE_FORMAT(DATE_ADD(started_at, INTERVAL 30 MINUTE), '%Y-%m-%d %H:00:00') as nearest_hour
-                FROM ss_twitch_streams
+                FROM ss_twitch_stream
                 GROUP BY nearest_hour
                 ORDER BY count DESC
             SQL
