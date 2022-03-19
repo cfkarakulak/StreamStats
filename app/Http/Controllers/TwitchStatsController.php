@@ -7,6 +7,7 @@ use App\Contracts\TwitchDataContract;
 use App\Repositories\TwitchUserRepository;
 use App\Repositories\TwitchDataRepository;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TwitchStatsController
 {
@@ -43,7 +44,7 @@ class TwitchStatsController
             ];
         }
 
-        return view('index', [
+        return Inertia::render('Index', [
             'data' => $data ?? [],
             'authenticated' => (bool) $user->has('id'),
             'twitch_oauth_uri' => $user->has('id') ? url()->to('/logout') : sprintf(
