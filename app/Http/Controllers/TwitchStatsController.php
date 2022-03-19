@@ -6,7 +6,7 @@ use App\Contracts\TwitchUserContract;
 use App\Contracts\TwitchDataContract;
 use App\Repositories\TwitchUserRepository;
 use App\Repositories\TwitchDataRepository;
-use Str;
+use Illuminate\Http\Request;
 
 class TwitchStatsController
 {
@@ -21,25 +21,41 @@ class TwitchStatsController
      *
      * @return array
      */
-    public function show()
+    public function index(Request $request)
     {
-        $data = [
-            'streams_by_game' => $this->twitchDataRepository->getGameStreamsGrouped(),
-            'games_by_viewers' => $this->twitchDataRepository->getGameStreamsByViewers(),
-            'streams_by_viewers' => $this->twitchDataRepository->getTopStreamsByViewers(),
-            'streams_by_nearest_hours' => $this->twitchDataRepository->getStreamsByNearestHour(),
-        ];
+        $user = collect($request->session()->get('user'));
+
+        if ($user->has('id')) {
+            $data = [
+                'streams_by_game' => $this->twitchDataRepository->getGameStreamsGrouped(),
+                'games_by_viewers' => $this->twitchDataRepository->getGameStreamsByViewers(),
+                'streams_by_nearest_hour' => $this->twitchDataRepository->getStreamsByNearestHour(),
+                'streams_by_viewers' => $streams = collect(
+                    $this->twitchDataRepository->getTopStreamsByViewers()
+                )->keyBy('id'),
+                'streams_followed_by_user' => $streams->intersectByKeys(
+                    $following = $this->twitchUserRepository->getUsersFollowedStreams(
+                        token: $user->get('access_token'),
+                        user_id: $user->get('id'),
+                    )->keyBy('id')
+                ),
+                'gain_count' => $streams->min('number_of_viewers') - $following->min('viewer_count'),
+            ];
+        }
 
         return view('index', [
-            'twitch_oauth_uri' => sprintf(
-                'https://id.twitch.tv/oauth2/authorize?%s',
+            'data' => $data ?? [],
+            'authenticated' => (bool) $user->has('id'),
+            'twitch_oauth_uri' => $user->has('id') ? url()->to('/logout') : sprintf(
+                '%s/authorize?%s',
+                env('TWITCH_API_ID'),
                 http_build_query([
                     'client_id' => env('TWITCH_CLIENT_ID'),
                     'redirect_uri' => env('TWITCH_REDIRECT_URI'),
                     'response_type' => 'code',
                     'scope' => 'user:read:email user:read:follows',
                 ])
-            )
+            ),
         ]);
     }
 
@@ -48,7 +64,7 @@ class TwitchStatsController
      *
      * @return array
      */
-    public function auth()
+    public function login(Request $request)
     {
         $auth = $this->twitchUserRepository->getAccessToken($_GET['code'])->only([
             'access_token', 'expires_in', 'refresh_token',
@@ -58,15 +74,21 @@ class TwitchStatsController
             'id', 'login', 'email',
         ]);
 
-        $this->twitchUserRepository->storeUser(
+        $request->session()->put('user', $this->twitchUserRepository->saveUser(
             data: $auth->merge($user)->all(),
-        );
+        ));
 
-        // $streams = $this->twitchUserRepository->getUsersFollowedStreams(
-        //     token: $auth->get('access_token'),
-        //     user_id: $user->get('id'),
-        // );
+        return redirect()->to('/');
+    }
 
-        dd($streams);
+    /**
+     * Twitch auth
+     *
+     * @return array
+     */
+    public function logout(Request $request)
+    {
+        $request->session()->forget('user');
+        return redirect()->to('/');
     }
 }

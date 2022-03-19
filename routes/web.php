@@ -14,11 +14,8 @@ use App\Http\Controllers\TwitchStatsController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::controller(TwitchStatsController::class)->group(function () {
-    Route::get('/show', 'show');
-    Route::get('/auth', 'auth');
+    Route::get('/', 'index');
+    Route::get('/login', 'login');
+    Route::get('/logout', 'logout');
 });

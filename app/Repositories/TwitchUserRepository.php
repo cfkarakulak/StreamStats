@@ -14,7 +14,7 @@ class TwitchUserRepository implements TwitchUserContract
     public function getAccessToken(string $code)
     {
         $response = Http::post(
-            sprintf('https://id.twitch.tv/oauth2/token?%s', http_build_query([
+            sprintf('%s/token?%s', env('TWITCH_API_ID'), http_build_query([
                 'client_id' => env('TWITCH_CLIENT_ID'),
                 'client_secret' => env('TWITCH_CLIENT_SECRET'),
                 'code' => $code,
@@ -35,7 +35,9 @@ class TwitchUserRepository implements TwitchUserContract
         $response = Http::withHeaders([
             'Client-Id' => env('TWITCH_CLIENT_ID'),
             'Authorization' => sprintf('Bearer %s', $token),
-        ])->get('https://api.twitch.tv/helix/users');
+        ])->get(
+            sprintf('%s/%s', env('TWITCH_API_HELIX'), 'users')
+        );
 
         if ($response->status() == 200) {
             return collect($response->json()['data'][0]);
@@ -44,9 +46,15 @@ class TwitchUserRepository implements TwitchUserContract
         throw new Exception('Something went wrong.');
     }
 
-    public function storeUser(array $data)
+    public function saveUser(array $data)
     {
-        return DB::table('twitch_user')->insert($data);
+        if (DB::table('twitch_user')->upsert($data, ['id'], [
+            'access_token', 'refresh_token', 'expires_in', 'email', 'login'
+        ])) {
+            return $data;
+        }
+
+        throw new Exception('Error storing user in the database.');
     }
 
     public function getUsersFollowedStreams(string $token, int $user_id)
@@ -54,10 +62,18 @@ class TwitchUserRepository implements TwitchUserContract
         $response = Http::withHeaders([
             'Client-Id' => env('TWITCH_CLIENT_ID'),
             'Authorization' => sprintf('Bearer %s', $token),
-        ])->get(sprintf('https://api.twitch.tv/helix/streams/followed?user_id=%s', $user_id));
+        ])->get(
+            sprintf('%s/%s?user_id=%s', env('TWITCH_API_HELIX'), 'streams/followed', $user_id)
+        );
 
         if ($response->status() == 200) {
-            return collect($response->json()['data'][0]);
+            $data = collect($response->json()['data']);
+
+            if ($data->count() > 0) {
+                return $data;
+            }
+
+            throw new Exception('No live stream found at the moment that this user is following.');
         }
 
         throw new Exception('Something went wrong.');

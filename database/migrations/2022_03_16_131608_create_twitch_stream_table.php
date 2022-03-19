@@ -13,7 +13,7 @@ return new class() extends Migration {
     public function up()
     {
         Schema::create('twitch_stream', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->integer('game_id');
             $table->string('game_name');
             $table->text('stream_title');
