@@ -106,7 +106,7 @@ class TwitchDataRepository implements TwitchDataContract
         );
     }
 
-    public function getStreamsByNearestHour()
+    public function getStreamsByNearestHours()
     {
         return DB::select(
             <<<SQL
@@ -116,7 +116,7 @@ class TwitchDataRepository implements TwitchDataContract
                     DATE_FORMAT(DATE_ADD(started_at, INTERVAL 30 MINUTE), '%Y-%m-%d %H:00:00') as nearest_hour
                 FROM ss_twitch_stream
                 GROUP BY nearest_hour
-                ORDER BY count DESC
+                ORDER BY nearest_hour ASC
             SQL
         );
     }

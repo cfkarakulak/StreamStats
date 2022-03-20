@@ -28,9 +28,9 @@ class TwitchStatsController
 
         if ($user->has('id')) {
             $data = [
-                'streams_by_game' => $this->twitchDataRepository->getGameStreamsGrouped(),
+                'streams_by_games' => $this->twitchDataRepository->getGameStreamsGrouped(),
                 'games_by_viewers' => $this->twitchDataRepository->getGameStreamsByViewers(),
-                'streams_by_nearest_hour' => $this->twitchDataRepository->getStreamsByNearestHour(),
+                'streams_by_nearest_hours' => $this->twitchDataRepository->getStreamsByNearestHours(),
                 'streams_by_viewers' => $streams = collect(
                     $this->twitchDataRepository->getTopStreamsByViewers()
                 )->keyBy('id'),
@@ -45,9 +45,10 @@ class TwitchStatsController
         }
 
         return Inertia::render('Index', [
-            'data' => $data ?? [],
             'authenticated' => (bool) $user->has('id'),
-            'twitch_oauth_uri' => $user->has('id') ? url()->to('/logout') : sprintf(
+            'data' => $data ?? [],
+            'user' => $user,
+            'auth_uri' => $user->has('id') ? url()->to('/logout') : sprintf(
                 '%s/authorize?%s',
                 env('TWITCH_API_ID'),
                 http_build_query([
