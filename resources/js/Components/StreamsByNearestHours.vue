@@ -3,18 +3,12 @@
     <li v-for="(item, index) in data">
       <div class="primary">
         <span>{{ index + 1 }}</span>
-        <h6>{{ item.stream_title }}</h6>
+        <h6>{{ item.nearest_hour }}</h6>
       </div>
 
       <div class="secondary">
-        <div class="rounded-hour">
-          <span>{{ item.nearest_hour }}</span>
-        </div>
-
-        <div class="count">
-          <small>Count:</small>
-          <ins>{{ item.count }}</ins>
-        </div>
+        <small>Streams started within:</small>
+        <ins>{{ item.count }}</ins>
       </div>
     </li>
   </ul>

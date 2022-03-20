@@ -98,6 +98,7 @@ class TwitchDataRepository implements TwitchDataContract
                 SELECT
                     id,
                     stream_title,
+                    game_name,
                     number_of_viewers
                 FROM ss_twitch_stream
                 ORDER BY number_of_viewers DESC
@@ -112,7 +113,7 @@ class TwitchDataRepository implements TwitchDataContract
             <<<SQL
                 SELECT
                     id, COUNT(id) as count,
-                    stream_title, started_at,
+                    started_at,
                     DATE_FORMAT(DATE_ADD(started_at, INTERVAL 30 MINUTE), '%Y-%m-%d %H:00:00') as nearest_hour
                 FROM ss_twitch_stream
                 GROUP BY nearest_hour

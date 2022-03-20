@@ -220,37 +220,6 @@
           </div>
         </div>
       </div>
-
-      <div class="za">
-        <div class="vtl-paging-info">
-          <div role="status" aria-live="polite">
-            {{
-              stringFormat(messages.pagingInfo, setting.offset, setting.limit, total)
-            }}
-          </div>
-        </div>
-
-        <div class="vtl-paging-change-div">
-          <span class="vtl-paging-count-label">{{
-            messages.pageSizeChangeLabel
-          }}</span>
-          <select class="vtl-paging-count-dropdown" v-model="setting.pageSize">
-            <option
-              v-for="pageOption in pageOptions"
-              :value="pageOption.value"
-              :key="pageOption.value"
-            >
-              {{ pageOption.text }}
-            </option>
-          </select>
-          <span class="vtl-paging-page-label">{{ messages.gotoPageLabel }}</span>
-          <select class="vtl-paging-page-dropdown" v-model="setting.page">
-            <option v-for="n in setting.maxPage" :key="n" :value="parseInt(n)">
-              {{ n }}
-            </option>
-          </select>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -308,7 +277,7 @@ export default defineComponent({
     // 一頁顯示筆數 (Display the number of items on one page)
     pageSize: {
       type: Number,
-      default: 10,
+      default: 12,
     },
     // 總筆數 (Total number of transactions)
     total: {
@@ -362,8 +331,8 @@ export default defineComponent({
       type: Array,
       default: () => [
         {
-          value: 10,
-          text: 10,
+          value: 12,
+          text: 12,
         },
         {
           value: 25,
@@ -832,7 +801,7 @@ tr {
 }
 
 tr:hover{
-  background: #f4f7fa;
+  background: #2a2a2a;
 }
 
 .table td,
@@ -844,7 +813,7 @@ tr:hover{
 .table th {
   padding: 0.75rem;
   vertical-align: middle;
-  border-bottom: 1px solid #363636;
+  height: 58px;
 }
 
 .row {
@@ -868,10 +837,6 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
   position: relative;
 }
 
-.vtl-paging-pagination-div {
-  margin: 0 auto;
-}
-
 .pagination {
   display: -ms-flexbox;
   display: flex;
@@ -886,11 +851,10 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
 }
 
 .page-item.disabled .page-link {
-  color: #6c757d;
-  pointer-events: none;
-  cursor: auto;
-  background-color: transparent!important;
-  border-color: #dbe3ed;
+color: #6c757d;
+pointer-events: none;
+cursor: auto;
+border-color: #dbe3ed;
 }
 
 .page-item:first-child .page-link {
@@ -900,13 +864,14 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
 }
 
 .page-link {
-  position: relative;
-  display: block;
-  padding: 0.5rem 0.75rem;
-  margin-left: -1px;
-  line-height: 1.25;
-  color: #637181;
-  border-radius: 6px;
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #6d6d6d;
+    border-radius: 6px;
+    font-size: 14px;
 }
 
 .vtl-paging-pagination-page-li-number {
@@ -921,11 +886,13 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
 .vtl-paging-pagination-page-link-prev {
   position: absolute;
   left: 8px;
+  background: #9b9b9b;
 }
 
 .vtl-paging-pagination-page-link-next {
   position: absolute;
   right: 8px;
+  background: #9b9b9b;
 }
 
 .vtl-paging-pagination-page-link-prev span,
@@ -972,14 +939,9 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 17'%3E%3Cpath d='M7 3.411V16a1 1 0 002 0V3.411l4.96 4.963a1 1 0 101.414-1.414L8.707.289a1 1 0 00-1.414 0L.626 6.959a1 1 0 101.415 1.415L7 3.41z'/%3E%3C/svg%3E")
 }
 
-.page-link:hover{
-  background:#fff;
-}
-
 .disabled .vtl-paging-pagination-page-link-number.page-link {
-  color: #fff !important;
-  background-color: #337ab7 !important;
-  font-weight: 700;
+    color: #fff !important;
+    font-weight: 700;
 }
 
 .sr-only {

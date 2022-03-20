@@ -30,6 +30,28 @@
     </div>
 
     <div class="stats" v-if="authenticated">
+      <div class="figures">
+        <div class="minimum-viewer-count">
+          <div class="question">
+            <small>How many viewers does the lowest viewer count stream that the logged in user is following need to gain in order to make it into the top 1000?</small>
+          </div>
+
+          <div class="answer">
+            <minimum-viewer-count :data="data.streams_by_games"></minimum-viewer-count>
+          </div>
+        </div>
+
+        <div class="median-number-of-viewers">
+          <div class="question">
+            <small>Median number of viewers for all streams</small>
+          </div>
+
+          <div class="answer">
+            <median-number-streams :data="data.streams_by_games"></median-number-streams>
+          </div>
+        </div>
+      </div>
+
       <div class="grouped">
         <div class="streams-by-game">
           <div class="question">
@@ -78,6 +100,8 @@
 </template>
 
 <script>
+import MinimumViewerCount from "../Components/MinimumViewerCount.vue";
+import MedianNumberStreams from "../Components/MedianNumberStreams.vue";
 import StreamsByGames from "../Components/StreamsByGames.vue";
 import StreamsByViewers from "../Components/StreamsByViewers.vue";
 import GamesByViewers from "../Components/GamesByViewers.vue";
@@ -85,6 +109,8 @@ import StreamsByNearestHours from "../Components/StreamsByNearestHours.vue";
 
 export default {
   components: {
+    MinimumViewerCount,
+    MedianNumberStreams,
     StreamsByGames,
     StreamsByViewers,
     GamesByViewers,

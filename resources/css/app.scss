@@ -20,10 +20,7 @@ body{
 }
 
 .attributes {
-    background: #fefdf7;
     border-radius: 6px;
-    height: 70px;
-    padding: 15px;
     display: flex;
     margin-bottom: 35px;
 
@@ -31,7 +28,7 @@ body{
         margin-right:20px;
 
         a {
-            background: #a18a47;
+            background: #b88928;
             border-radius: 3px;
             padding: 12px 21px;
             display: inline-block;
@@ -61,21 +58,24 @@ body{
             li {
                 padding-right: 15px;
                 margin-right:15px;
-                border-right: 1px solid #d0dae4;
+                border-right: 1px solid #252525;
+
+                &:last-child {
+                    border-right:0;
+                }
 
                 small {
                     display: block;
                     font-size: 13px;
-                    color: #9c936e;
+                    color: #504d41;
                     font-weight: 300;
-                    margin-bottom:3px;
+                    margin-bottom: 3px;
                 }
 
                 span {
                     display: block;
                     font-size: 14px;
-                    color: #343021;
-                    font-weight: 700;
+                    color: #ffffff;
                 }
             }
         }
@@ -98,9 +98,9 @@ table {
         th {
             padding: 0 !important;
             display: table-cell;
-            background: #212120;
-            color: #ebba1e;
-            border-right: 1px solid #32322e;
+            background: #2a2a2a;
+            color: #deb156;
+            border-right: 1px solid #252525;
             height: 54px;
             vertical-align: middle;
 
@@ -115,7 +115,7 @@ table {
                 padding: 22px 12px;
                 display: block;
                 line-height: 19px;
-                font-weight: 600;
+                font-weight: 400;
                 font-size: 14px;
                 height: 54px;
                 align-items: center;
@@ -125,12 +125,56 @@ table {
     }
 }
 
+.figures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    margin-bottom: 70px;
+
+    > div {
+        background: #fefdf7;
+        border-radius: 6px;
+        padding-top:25px;
+        padding-bottom:30px;
+    }
+
+    .median-number-of-viewers small {
+        height: 36px;
+    }
+
+    .question {
+        small {
+            font-size: 14px;
+            width: 90%;
+            display: block;
+            line-height: 18px;
+            color: #989898;
+            text-align: center;
+            margin: 0 auto;
+            margin-bottom: 23px;
+            margin-top: 18px;
+            display: block;
+            letter-spacing: 0.04em;
+            font-weight: 100;
+        }
+    }
+
+    .answer {
+        span {
+            font-size: 54px;
+            color: #000000;
+            font-weight: 100;
+            text-align: center;
+            display: block;
+        }
+    }
+}
+
 .paging_simple_numbers {
     .pagination {
         display: table;
         border-radius: 6px;
         margin: 0 auto 50px;
-        background: #e1e8f0;
         padding: 6px;
     }
 }
@@ -189,8 +233,7 @@ table {
 }
 
 input[type=checkbox]:checked {
-    background: #0d61d1;
-    box-shadow: 0 0 0 1px #e9f2ff, 0 0 6px 0.15rem #dbe3ed;
+    background: #cf9825;
 }
 
 input[type=checkbox]:checked:before {
@@ -234,7 +277,9 @@ input[type=checkbox]:checked:before {
                 width: 150px;
                 display: block;
                 line-height: 18px;
-                color: #ecce70;
+                color: #ffcc61;
+                font-weight: 100;
+                letter-spacing: 0.02em;
             }
         }
 
@@ -345,7 +390,9 @@ input[type=checkbox]:checked:before {
                 width: 250px;
                 display: block;
                 line-height: 18px;
-                color: #ecce70;
+                color: #ffcc61;
+                font-weight: 100;
+                letter-spacing: 0.02em;
             }
         }
     }
@@ -353,19 +400,4 @@ input[type=checkbox]:checked:before {
 
 .streams-by-nearest-hours .question small {
     width:250px !important;
-}
-
-.streams-by-nearest-hours{
-    .rounded-hour {
-        margin-bottom: 3px;
-
-        span {
-            font-size: 13px;
-            color: #8a8474;
-        }
-    }
-
-    li {
-        height: 70px !important;
-    }
 }

@@ -31,6 +31,7 @@ export default {
           select: '<div class="select-this"><input type="checkbox" data-id="b4babce1babe5a453511d212"></div>',
           title: props.data[key].stream_title,
           viewers: props.data[key].number_of_viewers,
+          game_name: props.data[key].game_name,
         });
     }
 
@@ -46,16 +47,22 @@ export default {
         {
           label: "Title",
           field: "title",
-          width: "3%",
+          width: "50%",
           sortable: true,
           isKey: true,
         },
         {
+          label: "Game",
+          field: "game_name",
+          width: "30%",
+          sortable: true,
+        },
+        {
           label: "Viewers",
           field: "viewers",
-          width: "10%",
+          width: "20%",
           sortable: true,
-        }
+        },
       ],
       rows: data,
       totalRecordCount: computed(() => {
