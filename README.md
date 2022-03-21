@@ -13,6 +13,10 @@ The project requires that you have PHP8.0 or above, If you wish this to be chang
 
 `./vendor/bin/sail artisan schedule:work`
 
+Also
+
+`npm i && npm build`
+
 ### Manual Invoking
 
 `./vendor/bin/sail artisan twitch:seed`
