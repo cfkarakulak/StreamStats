@@ -209,7 +209,11 @@ class TwitchDataRepository implements TwitchDataContract
             'Client-Id' => env('TWITCH_CLIENT_ID'),
             'Authorization' => sprintf('Bearer %s', env('TWITCH_APP_ACCESS_TOKEN')),
         ])->get(
-            sprintf('%s/%s?%s', env('TWITCH_API_HELIX'), 'tags/streams', http_build_query($params))
+            preg_replace(
+                '/%5B(?:[0-9]|[1-9][0-9]+)%5D=/',
+                '=',
+                sprintf('%s/%s?%s', env('TWITCH_API_HELIX'), 'tags/streams', http_build_query($params))
+            )
         );
 
         return $response->json()['data'];

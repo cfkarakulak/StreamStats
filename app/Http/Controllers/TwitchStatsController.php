@@ -49,7 +49,7 @@ class TwitchStatsController
                         $this->twitchDataRepository->getStreamTags()
                     )->pluck('tag')->unique()->intersect(
                         $following->pluck('tag_ids')->collapse()->unique()
-                    )->all(),
+                    )->values()->all(),
                 ),
             ];
         }
