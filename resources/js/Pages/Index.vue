@@ -10,7 +10,9 @@
           <svg width="256px" height="268px" viewBox="0 0 256 268" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid">
             <g><path fill="#FFF" d="M17.4579119,0 L0,46.5559188 L0,232.757287 L63.9826001,232.757287 L63.9826001,267.690956 L98.9144853,267.690956 L133.811571,232.757287 L186.171922,232.757287 L256,162.954193 L256,0 L17.4579119,0 Z M40.7166868,23.2632364 L232.73141,23.2632364 L232.73141,151.29179 L191.992415,192.033461 L128,192.033461 L93.11273,226.918947 L93.11273,192.033461 L40.7166868,192.033461 L40.7166868,23.2632364 Z M104.724985,139.668381 L127.999822,139.668381 L127.999822,69.843872 L104.724985,69.843872 L104.724985,139.668381 Z M168.721862,139.668381 L191.992237,139.668381 L191.992237,69.843872 L168.721862,69.843872 L168.721862,139.668381 Z"></path></g>
           </svg>
-          <span>Login with Twitch</span>
+
+          <span v-if="authenticated">Logout from Twitch</span>
+          <span v-else>Login with Twitch</span>
         </a>
       </div>
 
@@ -37,7 +39,7 @@
           </div>
 
           <div class="answer">
-            <minimum-viewer-count :data="data.streams_by_games"></minimum-viewer-count>
+            <minimum-viewer-count :data="data.minimum_viewer_count_to_gain"></minimum-viewer-count>
           </div>
         </div>
 
@@ -85,9 +87,29 @@
       </div>
 
       <div class="individual">
+        <div class="streams-followed-by-user">
+          <div class="question">
+            <small>Which of the top 1000 streams is the logged in user following?</small>
+          </div>
+
+          <div class="answer">
+            <streams-followed-by-user :data="data.streams_followed_by_user"></streams-followed-by-user>
+          </div>
+        </div>
+
+        <div class="shared-tags">
+          <div class="question">
+            <small>Which tags are shared between the user followed streams and the top 1000 streams? Also make sure to translate the tags to their respective name?</small>
+          </div>
+
+          <div class="answer">
+            <shared-tags :data="data.shared_tags"></shared-tags>
+          </div>
+        </div>
+
         <div class="streams-by-viewers">
           <div class="question">
-            <small>List of top 100 streams by viewer count that can be sorted asc & desc</small>
+            <small>List of top 100 streams by viewer count that can be sorted asc &amp; desc</small>
           </div>
 
           <div class="answer">
@@ -103,18 +125,22 @@
 import MinimumViewerCount from "../Components/MinimumViewerCount.vue";
 import MedianNumberStreams from "../Components/MedianNumberStreams.vue";
 import StreamsByGames from "../Components/StreamsByGames.vue";
-import StreamsByViewers from "../Components/StreamsByViewers.vue";
 import GamesByViewers from "../Components/GamesByViewers.vue";
 import StreamsByNearestHours from "../Components/StreamsByNearestHours.vue";
+import StreamsFollowedByUser from "../Components/StreamsFollowedByUser.vue";
+import SharedTags from "../Components/SharedTags.vue";
+import StreamsByViewers from "../Components/StreamsByViewers.vue";
 
 export default {
   components: {
     MinimumViewerCount,
     MedianNumberStreams,
     StreamsByGames,
-    StreamsByViewers,
     GamesByViewers,
     StreamsByNearestHours,
+    StreamsFollowedByUser,
+    SharedTags,
+    StreamsByViewers,
   },
   props: {
     auth_uri: {

@@ -27,20 +27,29 @@ class TwitchStatsController
         $user = collect($request->session()->get('user'));
 
         if ($user->has('id')) {
+            $streams = collect(
+                $this->twitchDataRepository->getTopStreamsByViewers()
+            )->keyBy('id');
+
+            $following = $this->twitchUserRepository->getUsersFollowedStreams(
+                token: $user->get('access_token'),
+                user_id: $user->get('id'),
+            )->keyBy('id');
+
             $data = [
                 'streams_by_games' => $this->twitchDataRepository->getGameStreamsGrouped(),
                 'games_by_viewers' => $this->twitchDataRepository->getGameStreamsByViewers(),
                 'streams_by_nearest_hours' => $this->twitchDataRepository->getStreamsByNearestHours(),
-                'streams_by_viewers' => $streams = collect(
-                    $this->twitchDataRepository->getTopStreamsByViewers()
-                )->keyBy('id'),
-                'streams_followed_by_user' => $streams->intersectByKeys(
-                    $following = $this->twitchUserRepository->getUsersFollowedStreams(
-                        token: $user->get('access_token'),
-                        user_id: $user->get('id'),
-                    )->keyBy('id')
+                'streams_by_viewers' => $streams->take(100),
+                'streams_followed_by_user' => $streams->intersectByKeys($following),
+                'minimum_viewer_count_to_gain' => $streams->min('number_of_viewers') - $following->min('viewer_count'),
+                'shared_tags' => $this->twitchDataRepository->getStreamTagsRespectiveNames(
+                    tags: collect(
+                        $this->twitchDataRepository->getStreamTags()
+                    )->pluck('tag')->unique()->intersect(
+                        $following->pluck('tag_ids')->collapse()->unique()
+                    )->all(),
                 ),
-                'gain_count' => $streams->min('number_of_viewers') - $following->min('viewer_count'),
             ];
         }
 

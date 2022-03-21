@@ -24,11 +24,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Http::macro('twitch', function () {
-            return Http::withHeaders([
-                'Authorization' => sprintf('Bearer %s', env('TWITCH_CLIENT_SECRET')),
-                'Client-Id' => env('TWITCH_CLIENT_ID'),
-            ])->baseUrl('https://api.twitch.tv/helix/');
-        });
     }
 }

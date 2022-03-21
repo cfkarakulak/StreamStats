@@ -41,26 +41,38 @@ class TwitchSeedStreams extends Command
      */
     public function handle()
     {
-        $streams = $this->twitchDataRepository->getStreams();
+        $data = $this->twitchDataRepository->getStreams();
 
-        if ($streams->count() <= 0) {
+        if ($data->count() <= 0) {
             return self::abort('Twitch API returned with an empty streams response.');
         }
 
-        // sortu kendimiz belirlememiz gerekiyor.
-        $data = $streams->map(function ($item) {
+        $streams = $data->map(function ($item) {
             return collect($item)
                 ->only('id', 'title', 'game_id', 'game_name', 'viewer_count', 'started_at')
                 ->values()
                 ->all();
         });
 
+        $tags = $data->map(function ($item) {
+            return collect($item['tag_ids'])->map(function ($v) use ($item) {
+                return [$item['id'], $v];
+            });
+        })->collapse();
+
         $execute = $this->twitchDataRepository->storeStreams(
-            streams: $data->collapse()->toArray(),
-            count: $data->count(),
+            streams: $streams->collapse()->toArray(),
+            count: $streams->count(),
         );
 
-        return 0;
+        if ($execute) {
+            $this->twitchDataRepository->storeStreamTags(
+                tags: $tags->collapse()->toArray(),
+                count: $tags->count(),
+            );
+        }
+
+        return (int) !$execute;
     }
 
     public static function abort($content)

@@ -1,9 +1,10 @@
 <template>
   <ul>
     <li v-for="item in data">
-      <div class="following">
-        <span>{{ item.game_name }}</span>
-        <h6>{{ item.stream_title }}</h6>
+      <div class="tags">
+        <span>{{ item.tag_id }}</span>
+        <h6>{{ item.localization_names['en-us'] }}</h6>
+        <p>{{ item.localization_descriptions['en-us'] }}</p>
       </div>
     </li>
   </ul>
@@ -11,7 +12,7 @@
 
 <script>
 export default {
-  name: "StreamsFollowedByUser",
+  name: "SharedTags",
   props: {
     data: {
       type: Object,
