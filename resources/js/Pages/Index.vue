@@ -27,6 +27,11 @@
             <small>Your email</small>
             <span>{{ user.email }}</span>
           </li>
+
+          <li>
+            <small>User ID</small>
+            <span>{{ user.id }}</span>
+          </li>
         </ul>
       </div>
     </div>
