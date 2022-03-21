@@ -12,5 +12,5 @@ interface TwitchDataContract
     public function getTopStreamsByViewers();
     public function getStreamTags();
     public function getStreamsByNearestHours();
-    public function getStreamTagsRespectiveNames();
+    public function getStreamTagsRespectiveNames(array $tags);
 }

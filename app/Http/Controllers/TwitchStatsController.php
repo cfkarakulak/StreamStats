@@ -43,6 +43,7 @@ class TwitchStatsController
                 'streams_by_viewers' => $streams->take(100),
                 'streams_followed_by_user' => $streams->intersectByKeys($following),
                 'minimum_viewer_count_to_gain' => $streams->min('number_of_viewers') - $following->min('viewer_count'),
+                'median_of_streams' => $streams->median('number_of_viewers'),
                 'shared_tags' => $this->twitchDataRepository->getStreamTagsRespectiveNames(
                     tags: collect(
                         $this->twitchDataRepository->getStreamTags()

@@ -1,6 +1,6 @@
 <template>
   <div class="number">
-    <span>6481</span>
+    <span>{{ data }}</span>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ export default {
   name: "MedianNumberStreams",
   props: {
     data: {
-      type: Object,
+      type: Number,
       required: true,
     }
   },

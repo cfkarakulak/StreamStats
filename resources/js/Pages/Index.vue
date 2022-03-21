@@ -49,7 +49,7 @@
           </div>
 
           <div class="answer">
-            <median-number-streams :data="data.streams_by_games"></median-number-streams>
+            <median-number-streams :data="data.median_of_streams"></median-number-streams>
           </div>
         </div>
       </div>
