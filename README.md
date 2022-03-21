@@ -9,6 +9,8 @@ The whole project can be deployed if you wish to see it on action.
 
 The project requires that you have PHP8.0 or above, If you wish this to be changed, please let me know.  
 
+After composer installs
+
 `./vendor/bin/sail up`
 
 `./vendor/bin/sail artisan schedule:work`
