@@ -1,8 +1,16 @@
+### Demo
+
+https://user-images.githubusercontent.com/15141224/159342218-c8632b57-a734-4418-b8d1-fd7945ac18f6.mp4
+
+
+The whole project can be deployed if you wish to see it on action.
+
 ### Some Notes
 
 The project requires that you have PHP8.0 or above, If you wish this to be changed, please let me know.  
 
 `./vendor/bin/sail up`
+
 `./vendor/bin/sail artisan schedule:work`
 
 ### Manual Invoking
