@@ -11,6 +11,11 @@ use Log;
 
 class TwitchDataRepository implements TwitchDataContract
 {
+    /**
+     * Get streams data from Twitch
+     *
+     * @return Collection
+     */
     public function getStreams(): Collection
     {
         $data = collect();
@@ -40,8 +45,18 @@ class TwitchDataRepository implements TwitchDataContract
         return $data->collapse()->take(1000)->shuffle();
     }
 
+    /**
+     * Store fetched streams in the DB
+     *
+     * @param $streams array
+     * @param $count int
+     * @return boolean
+     */
     public function storeStreams(array $streams, int $count)
     {
+        DB::table('twitch_stream_tag')->delete();
+        DB::table('twitch_stream')->delete();
+
         return DB::update(
             sprintf(
                 <<<SQL
@@ -55,13 +70,6 @@ class TwitchDataRepository implements TwitchDataContract
                             started_at
                         )
                     VALUES %s
-
-                    ON DUPLICATE KEY UPDATE
-                    game_id = VALUES(game_id),
-                    game_name = VALUES(game_name),
-                    stream_title = VALUES(stream_title),
-                    number_of_viewers = VALUES(number_of_viewers),
-                    started_at = VALUES(started_at)
                 SQL,
                 str_repeat('(?,?,?,?,?,?)' . ',', $count - 1) . '(?,?,?,?,?,?)',
             ),
@@ -69,6 +77,13 @@ class TwitchDataRepository implements TwitchDataContract
         );
     }
 
+    /**
+     * Store fetched stream tags in the DB
+     *
+     * @param $tags array
+     * @param $count int
+     * @return boolean
+     */
     public function storeStreamTags(array $tags, int $count)
     {
         return DB::update(
@@ -87,6 +102,11 @@ class TwitchDataRepository implements TwitchDataContract
         );
     }
 
+    /**
+     * Get streams grouped by game ids
+     *
+     * @return array
+     */
     public function getGameStreamsGrouped()
     {
         return DB::select(
@@ -100,6 +120,11 @@ class TwitchDataRepository implements TwitchDataContract
         );
     }
 
+    /**
+     * Get game streams and number of viewers
+     *
+     * @return array
+     */
     public function getGameStreamsByViewers()
     {
         return DB::select(
@@ -114,6 +139,11 @@ class TwitchDataRepository implements TwitchDataContract
         );
     }
 
+    /**
+     * Get top streams ordered by number of viewers
+     *
+     * @return array
+     */
     public function getTopStreamsByViewers()
     {
         return DB::select(
@@ -128,6 +158,11 @@ class TwitchDataRepository implements TwitchDataContract
         );
     }
 
+    /**
+     * Get tags that belong to a stream
+     *
+     * @return array
+     */
     public function getStreamTags()
     {
         return DB::select(
@@ -139,9 +174,32 @@ class TwitchDataRepository implements TwitchDataContract
         );
     }
 
+    /**
+     * Group streams to the nearest rounded hour
+     *
+     * @return array
+     */
+    public function getStreamsByNearestHours()
+    {
+        return DB::select(
+            <<<SQL
+                SELECT
+                    id, COUNT(id) as count, started_at,
+                    DATE_FORMAT(DATE_ADD(started_at, INTERVAL 30 MINUTE), '%Y-%m-%d %H:00:00') as nearest_hour
+                FROM ss_twitch_stream
+                GROUP BY nearest_hour
+                ORDER BY nearest_hour ASC
+            SQL
+        );
+    }
+
+    /**
+     * Get tags' meaningful names
+     *
+     * @return array
+     */
     public function getStreamTagsRespectiveNames(array $tags)
     {
-        $data = collect();
         $params = [
             'first' => 100,
             'tag_id' => $tags,
@@ -155,19 +213,5 @@ class TwitchDataRepository implements TwitchDataContract
         );
 
         return $response->json()['data'];
-    }
-
-    public function getStreamsByNearestHours()
-    {
-        return DB::select(
-            <<<SQL
-                SELECT
-                    id, COUNT(id) as count, started_at,
-                    DATE_FORMAT(DATE_ADD(started_at, INTERVAL 30 MINUTE), '%Y-%m-%d %H:00:00') as nearest_hour
-                FROM ss_twitch_stream
-                GROUP BY nearest_hour
-                ORDER BY nearest_hour ASC
-            SQL
-        );
     }
 }

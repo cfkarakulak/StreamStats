@@ -71,7 +71,7 @@ class TwitchStatsController
     }
 
     /**
-     * Twitch auth
+     * Login with a Twitch account
      *
      * @return array
      */
@@ -93,7 +93,7 @@ class TwitchStatsController
     }
 
     /**
-     * Twitch auth
+     * Logout
      *
      * @return array
      */

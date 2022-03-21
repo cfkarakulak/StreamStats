@@ -11,6 +11,12 @@ use Log;
 
 class TwitchUserRepository implements TwitchUserContract
 {
+    /**
+     * Get access token from Twitch response
+     *
+     * @param $code string
+     * @return array
+     */
     public function getAccessToken(string $code)
     {
         $response = Http::post(
@@ -30,6 +36,12 @@ class TwitchUserRepository implements TwitchUserContract
         throw new Exception('Something went wrong.');
     }
 
+    /**
+     * Get Twitch user details
+     *
+     * @param $token string
+     * @return array
+     */
     public function getUser(string $token)
     {
         $response = Http::withHeaders([
@@ -46,6 +58,12 @@ class TwitchUserRepository implements TwitchUserContract
         throw new Exception('Something went wrong.');
     }
 
+    /**
+     * Save user in the DB
+     *
+     * @param $data array
+     * @return array
+     */
     public function saveUser(array $data)
     {
         if (DB::table('twitch_user')->upsert($data, ['id'], [
@@ -57,6 +75,13 @@ class TwitchUserRepository implements TwitchUserContract
         throw new Exception('Error storing user in the database.');
     }
 
+    /**
+     * Get user's followed streams
+     *
+     * @param $token string
+     * @param $user_id int
+     * @return array
+     */
     public function getUsersFollowedStreams(string $token, int $user_id)
     {
         $response = Http::withHeaders([
